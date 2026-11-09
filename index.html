@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水電費分攤計算器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen py-8 px-4">
+    <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-indigo-600 px-6 py-4 text-white">
+            <h1 class="text-2xl font-bold">水電費分攤計算器</h1>
+            <p class="text-indigo-200 text-sm mt-1">輕鬆計算水電分攤金額並一鍵複製明細</p>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <!-- 水費計算區 -->
+            <div class="border border-slate-200 rounded-xl p-5 bg-blue-50/30">
+                <h2 class="text-lg font-semibold text-blue-900 mb-4 flex items-center">
+                    <span class="bg-blue-600 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">水</span>
+                    水費分攤計算
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">當期水費總額 (A)</label>
+                        <input type="number" id="water_total_fee" placeholder="例如: 1200" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">當期總度數 (B)</label>
+                        <input type="number" id="water_total_degree" placeholder="例如: 50" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">這期水錶度數</label>
+                        <input type="number" id="water_current" placeholder="例如: 120" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">上期水錶度數</label>
+                        <input type="number" id="water_prev" placeholder="例如: 100" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-blue-100 flex justify-between items-center text-sm">
+                    <span class="text-slate-600">分攤度數 (C = 這期 - 上期)：<strong id="water_c" class="text-blue-700">0</strong> 度</span>
+                    <span class="text-slate-600">分攤水費 (D)：<strong id="water_d" class="text-blue-700 text-lg">0</strong> 元</span>
+                </div>
+            </div>
+
+            <!-- 電費計算區 -->
+            <div class="border border-slate-200 rounded-xl p-5 bg-amber-50/30">
+                <h2 class="text-lg font-semibold text-amber-900 mb-4 flex items-center">
+                    <span class="bg-amber-600 text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2">電</span>
+                    電費分攤計算
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">當期電費總額 (E)</label>
+                        <input type="number" id="elec_total_fee" placeholder="例如: 3000" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">當期總度數 (F)</label>
+                        <input type="number" id="elec_total_degree" placeholder="例如: 300" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">這期電錶度數</label>
+                        <input type="number" id="elec_current" placeholder="例如: 550" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">上期電錶度數</label>
+                        <input type="number" id="elec_prev" placeholder="例如: 450" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">公用電費費用 (H)</label>
+                        <input type="number" id="elec_public" placeholder="例如: 400" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm">
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-amber-100 flex justify-between items-center text-sm">
+                    <span class="text-slate-600">分攤度數 (G = 這期 - 上期)：<strong id="elec_g" class="text-amber-700">0</strong> 度</span>
+                    <span class="text-slate-600">分攤電費 (I)：<strong id="elec_i" class="text-amber-700 text-lg">0</strong> 元</span>
+                </div>
+            </div>
+
+            <!-- 總計與複製 -->
+            <div class="bg-slate-900 text-white p-5 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <span class="text-slate-400 text-xs block">應繳總金額 (水費 + 電費)</span>
+                    <span id="grand_total" class="text-3xl font-extrabold text-emerald-400">0 元</span>
+                </div>
+                <button onclick="copyResult()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2.5 rounded-lg transition text-sm shadow-md flex items-center justify-center gap-2">
+                    📋 一鍵複製 LINE 帳單明細
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            let A = parseFloat(document.getElementById('water_total_fee').value) || 0;
+            let B = parseFloat(document.getElementById('water_total_degree').value) || 0;
+            let waterCurr = parseFloat(document.getElementById('water_current').value) || 0;
+            let waterPrev = parseFloat(document.getElementById('water_prev').value) || 0;
+            
+            let C = waterCurr - waterPrev;
+            if (C < 0) C = 0;
+            let D = (B > 0) ? (A / B) * C : 0;
+
+            document.getElementById('water_c').innerText = C;
+            document.getElementById('water_d').innerText = Math.round(D);
+
+            let E = parseFloat(document.getElementById('elec_total_fee').value) || 0;
+            let F = parseFloat(document.getElementById('elec_total_degree').value) || 0;
+            let elecCurr = parseFloat(document.getElementById('elec_current').value) || 0;
+            let elecPrev = parseFloat(document.getElementById('elec_prev').value) || 0;
+            let H = parseFloat(document.getElementById('elec_public').value) || 0;
+
+            let G = elecCurr - elecPrev;
+            if (G < 0) G = 0;
+            let I = (F > 0) ? (E / F) * G + (H / 2) : (H / 2);
+
+            document.getElementById('elec_g').innerText = G;
+            document.getElementById('elec_i').innerText = Math.round(I);
+
+            let total = Math.round(D) + Math.round(I);
+            document.getElementById('grand_total').innerText = total + ' 元';
+        }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+        function copyResult() {
+            let D = Math.round(parseFloat(document.getElementById('water_d').innerText) || 0);
+            let I = Math.round(parseFloat(document.getElementById('elec_i').innerText) || 0);
+            let total = D + I;
+            let C = document.getElementById('water_c').innerText;
+            let G = document.getElementById('elec_g').innerText;
+
+            let text = `【水電費分攤明細】\n` +
+                       `--------------------\n` +
+                       `💧 分攤水度數：${C} 度\n` +
+                       `💧 應分攤水費：$${D}\n\n` +
+                       `⚡ 分攤電度數：${G} 度\n` +
+                       `⚡ 應分攤電費：$${I}\n` +
+                       `--------------------\n` +
+                       `💰 本期總計應付：$${total} 元`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已成功複製對帳明細！可以直接貼到 LINE 群組對帳。');
+            }).catch(err => {
+                alert('複製失敗，請手動複製。');
+            });
+        }
+    </script>
+</body>
+</html>
